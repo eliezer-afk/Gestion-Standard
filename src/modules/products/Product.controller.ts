@@ -1,3 +1,8 @@
+import { NextFunction, Request, Response } from "express";
+import { BaseController } from "../../core/controllers/BaseController";
+import { Product } from "./Product.entity";
+import { ProductService } from "./Product.service";
+
 export class ProductController extends BaseController<Product> {
     constructor(service: ProductService) {
         super(service);

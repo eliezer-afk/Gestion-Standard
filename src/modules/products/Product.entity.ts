@@ -1,3 +1,5 @@
+import { BaseEntity } from "../../core/entities/BaseEntity";
+
 export class Product extends BaseEntity {
     name?: string;
     description?: string;

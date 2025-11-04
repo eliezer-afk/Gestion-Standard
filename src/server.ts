@@ -1,33 +1,65 @@
-// Configuracion del servidor
-import express from 'express'
-import colors from 'colors'
-import router from './routers/router'
-import db from './config/db'
+import express from 'express';
+import type { Request, Response, NextFunction } from 'express';
+import cors from 'cors';
+import helmet from 'helmet';
+import compression from 'compression';
+import colors from 'colors';
 
-// Conectar a la BD
+import { customerRouter, orderRouter, productRouter } from './routers/router';
+import { logger } from './shared/utils/logger';
+import { errorHandler } from './shared/middleware/errorHandler';
+import { authLimiter } from './shared/middleware/rateLimiter';
+import db from './config/db';
+
+// Database connection
 export async function connectDB() {
     try {
-        await db.authenticate()
-        db.sync()
-        console.log(colors.bgBlue.white('Conexion Exitosa a la BD'))
+        db.authenticate();
+        db.sync();
+        console.log(colors.bgBlue.white('Database connection established successfully'));
     } catch (error) {
-        console.log(error)
-        console.log(colors.bgRed.white('Hubo un error al conectar a la BD'))
+        console.error(colors.bgRed.white('Database connection failed:'), error);
+        process.exit(1);
     }
 }
 
-connectDB()
+// Express instance
+const server = express();
 
-// Instancia de express
-const server = express()
+// Global middleware
+server.use(helmet()); // Seguridad
+server.use(cors()); // CORS
+server.use(compression()); // Compresión de respuestas
+server.use(express.json()); // Parse JSON bodies
+server.use(express.urlencoded({ extended: true })); // Parse URL-encoded bodies
+server.use(authLimiter); // Rate limiting
 
-// Leer datos de formularios
-server.use(express.json())
+// Request logging middleware
+server.use((req: Request, res: Response, next: NextFunction) => {
+    logger.info(`${req.method} ${req.originalUrl}`);
+    next();
+});
 
-server.use('/api/products', router)
+// API Routes
+server.use('/api/v1/customers', customerRouter);
+server.use('/api/v1/orders', orderRouter);
+server.use('/api/v1/products', productRouter);
 
-server.get('/api', (req, res) => {
-    res.json({ msg: 'Desde API' })
-})
+// Health check route
+server.get('/health', (req: Request, res: Response) => {
+    res.status(200).json({ status: 'OK', timestamp: new Date().toISOString() });
+});
 
-export default server
+// Error handling middleware - debe ir después de las rutas
+server.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.error(colors.red(err.stack || err.message));
+    errorHandler(err, req, res, next);
+});
+
+// Connect to database
+connectDB().catch(err => {
+    console.error(colors.bgRed.white('Failed to connect to database:'), err);
+    process.exit(1);
+});
+
+export default server;

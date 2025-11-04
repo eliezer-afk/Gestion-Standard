@@ -1,3 +1,6 @@
+import { NextFunction, Response } from "express";
+import { AuthRequest } from "./auth";
+
 export const authorize = (...roles: string[]) => {
     return (req: AuthRequest, res: Response, next: NextFunction) => {
         if (!req.user) {

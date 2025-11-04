@@ -1,3 +1,6 @@
+import { BaseEntity } from "../entities/BaseEntity";
+import { IBaseRepository } from "../repositories/BaseRepository";
+
 export abstract class BaseService<T extends BaseEntity> {
     constructor(protected repository: IBaseRepository<T>) { }
 

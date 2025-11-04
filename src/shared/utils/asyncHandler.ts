@@ -1,3 +1,5 @@
+import { NextFunction } from "express";
+
 type AsyncFunction = (req: Request, res: Response, next: NextFunction) => Promise<any>;
 
 export const asyncHandler = (fn: AsyncFunction) => {

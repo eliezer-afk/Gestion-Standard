@@ -1,3 +1,5 @@
+import { PaginationResult } from "./pagination";
+
 export class ResponseFormatter {
     static success<T>(data: T, message?: string) {
         return {

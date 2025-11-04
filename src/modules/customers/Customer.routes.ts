@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { CustomerController } from './Customer.controller';
 import { createRouter } from '../../shared/utils/routerFactory';
+import { Customer } from './Customer.entity';
 
 export const createCustomerRoutes = (controller: CustomerController): Router => {
     return createRouter<Customer>(controller, (router, ctrl) => {

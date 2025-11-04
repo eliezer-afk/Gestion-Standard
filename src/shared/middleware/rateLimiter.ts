@@ -1,4 +1,4 @@
-mport rateLimit from 'express-rate-limit';
+import rateLimit from 'express-rate-limit';
 
 export const createRateLimiter = (
     windowMs: number = 15 * 60 * 1000, // 15 minutos

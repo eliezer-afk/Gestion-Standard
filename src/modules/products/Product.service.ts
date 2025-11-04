@@ -1,3 +1,7 @@
+import { BaseService } from "../../core/services/BaseService";
+import { Product } from "./Product.entity";
+import { ProductRepository } from "./Product.repository";
+
 export class ProductService extends BaseService<Product> {
     constructor(repository: ProductRepository) {
         super(repository);

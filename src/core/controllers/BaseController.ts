@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
+import { BaseEntity } from '../entities/BaseEntity';
+import { BaseService } from '../services/BaseService';
 
 export abstract class BaseController<T extends BaseEntity> {
     constructor(protected service: BaseService<T>) { }

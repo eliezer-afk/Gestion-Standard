@@ -1,3 +1,7 @@
+import { Pool } from "pg";
+import { BaseRepository } from "../../core/repositories/BaseRepository";
+import { Product } from "./Product.entity";
+
 export class ProductRepository extends BaseRepository<Product> {
     constructor(pool: Pool) {
         super(pool, 'products');
